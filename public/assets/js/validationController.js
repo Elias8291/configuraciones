@@ -1,6 +1,4 @@
-// validationController.js
 document.addEventListener("DOMContentLoaded", function() {
-    // RFC field adjustment based on "Tipo de Persona"
     let tipoPersona = document.getElementById('tipo_persona');
     let rfcInput = document.getElementById('rfc');
     if (tipoPersona && rfcInput) {
@@ -15,74 +13,149 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Seleccionar todos los campos de nombre y apellidos
-    const nameInputs = document.querySelectorAll('#name, #first_lastname, #second_lastname');
-
-    
-    // Expresión regular que solo permite letras y espacios
+    const nameInput = document.getElementById('name');
+    const firstLastnameInput = document.getElementById('first_lastname');
+    const secondLastnameInput = document.getElementById('second_lastname');
     const nameRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]*$/;
-    
-    nameInputs.forEach(input => {
-        // Validación mientras se escribe
-        input.addEventListener('input', function(e) {
-            let inputValue = this.value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailInput = document.getElementById('email');
+    const emailConfirmationInput = document.getElementById('email_confirmation');
+    const nextButton = document.getElementById('next-button');
+
+    if (emailConfirmationInput) {
+        emailConfirmationInput.disabled = true;
+    }
+
+    function validateEmail(input) {
+        const emailValue = input.value.trim();
+        if (emailValue === '') {
+            showErrorMessage(input, 'El correo electrónico es obligatorio');
+            return false;
+        } else if (!emailValue.includes('@')) {
+            showErrorMessage(input, 'Falta el símbolo "@" en el correo electrónico');
+            return false;
+        } else if (!emailValue.split('@')[1] || !emailValue.split('@')[1].includes('.')) {
+            showErrorMessage(input, 'Falta el dominio en el correo electrónico');
+            return false;
+        } else if (!emailRegex.test(emailValue)) {
+            showErrorMessage(input, 'El correo electrónico no tiene un formato válido');
+            return false;
+        } else {
+            removeErrorMessage(input);
+            return true;
+        }
+    }
+
+    function validateName(input, minLength, maxLength) {
+        const nameValue = input.value.trim();
+        if (nameValue.length < minLength) {
+            showErrorMessage(input, `Debe tener al menos ${minLength} caracteres`);
+            return false;
+        } else if (nameValue.length > maxLength) {
+            showErrorMessage(input, `No puede exceder los ${maxLength} caracteres`);
+            return false;
+        } else if (!nameRegex.test(nameValue)) {
+            showErrorMessage(input, 'Solo se permiten letras y espacios');
+            return false;
+        } else {
+            removeErrorMessage(input);
+            return true;
+        }
+    }
+
+    function checkEmailsMatch() {
+        if (emailInput && emailConfirmationInput && emailConfirmationInput.value.trim() !== '') {
+            const email = emailInput.value.trim();
+            const emailConfirmation = emailConfirmationInput.value.trim();
             
-            // Si el valor no coincide con la expresión regular
-            if (!nameRegex.test(inputValue)) {
-                // Eliminar caracteres no permitidos
-                this.value = inputValue.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
-                
-                // Mostrar mensaje de error
-                showErrorMessage(this, 'Solo se permiten letras y espacios');
+            if (email !== emailConfirmation) {
+                showErrorMessage(emailConfirmationInput, 'Los correos electrónicos no coinciden');
+                return false;
             } else {
-                // Remover mensaje de error si existe
+                removeErrorMessage(emailConfirmationInput);
+                return true;
+            }
+        }
+        return true;
+    }
+
+    function checkRequiredFields() {
+        const name = nameInput.value.trim();
+        const firstLastname = firstLastnameInput.value.trim();
+        const email = emailInput ? emailInput.value.trim() : '';
+        const emailConfirmation = emailConfirmationInput ? emailConfirmationInput.value.trim() : '';
+
+        const hasName = name.length >= 2;
+        const hasFirstLastname = firstLastname.length >= 2;
+        const hasEmail = email !== '';
+        const emailsMatch = email === emailConfirmation || emailConfirmation === '';
+
+        if (hasName && hasFirstLastname && hasEmail && emailsMatch) {
+            nextButton.disabled = false;
+        } else {
+            nextButton.disabled = true;
+        }
+    }
+
+    if (emailInput) {
+        emailInput.addEventListener('input', function() {
+            const isValid = validateEmail(this);
+            if (emailConfirmationInput) {
+                emailConfirmationInput.disabled = !isValid;
+                if (emailConfirmationInput.value.trim() !== '') {
+                    checkEmailsMatch();
+                }
+            }
+            checkRequiredFields();
+        });
+    }
+
+    if (emailConfirmationInput) {
+        emailConfirmationInput.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+                validateEmail(this);
+                checkEmailsMatch();
+            } else {
                 removeErrorMessage(this);
             }
+            checkRequiredFields();
         });
+    }
 
-        // Prevenir pegar contenido no válido
-        input.addEventListener('paste', function(e) {
-            e.preventDefault();
-            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-            
-            if (nameRegex.test(pastedText)) {
-                this.value = pastedText;
-            } else {
-                showErrorMessage(this, 'El texto pegado contiene caracteres no permitidos');
-            }
+    if (nameInput) {
+        nameInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+            validateName(this, 2, 60);
+            checkRequiredFields();
         });
+    }
 
-        // Prevenir teclas especiales
-        input.addEventListener('keypress', function(e) {
-            const char = String.fromCharCode(e.keyCode || e.which);
-            if (!nameRegex.test(char)) {
-                e.preventDefault();
-                showErrorMessage(this, 'Carácter no permitido');
-            }
+    if (firstLastnameInput) {
+        firstLastnameInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+            validateName(this, 2, 50);
+            checkRequiredFields();
         });
-    });
+    }
 
-    // Función para mostrar mensaje de error
+    if (secondLastnameInput) {
+        secondLastnameInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+            validateName(this, 2, 50);
+            checkRequiredFields();
+        });
+    }
+
     function showErrorMessage(input, message) {
-        // Verificar si ya existe un mensaje de error
         let errorDiv = input.parentElement.querySelector('.error-message');
-        
         if (!errorDiv) {
-            // Crear nuevo mensaje de error
             errorDiv = document.createElement('div');
             errorDiv.className = 'error-message text-danger mt-1';
             input.parentElement.appendChild(errorDiv);
         }
-        
         errorDiv.textContent = message;
-        
-        // Remover el mensaje después de 2 segundos
-        setTimeout(() => {
-            removeErrorMessage(input);
-        }, 2000);
     }
 
-    // Función para remover mensaje de error
     function removeErrorMessage(input) {
         const errorDiv = input.parentElement.querySelector('.error-message');
         if (errorDiv) {
@@ -90,19 +163,36 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Validación antes de enviar el formulario
     document.querySelector('form').addEventListener('submit', function(e) {
         let hasErrors = false;
         
-        nameInputs.forEach(input => {
-            if (!nameRegex.test(input.value)) {
-                hasErrors = true;
-                showErrorMessage(input, 'Este campo solo permite letras');
-            }
-        });
-        
+        if (!validateName(nameInput, 2, 60)) hasErrors = true;
+        if (!validateName(firstLastnameInput, 2, 50)) hasErrors = true;
+        if (!validateName(secondLastnameInput, 2, 50)) hasErrors = true;
+
+        if (emailInput && !validateEmail(emailInput)) hasErrors = true;
+        if (emailConfirmationInput && emailConfirmationInput.value.trim() !== '' && !validateEmail(emailConfirmationInput)) hasErrors = true;
+        if (emailInput && emailConfirmationInput && emailInput.value !== emailConfirmationInput.value) {
+            hasErrors = true;
+            showErrorMessage(emailConfirmationInput, 'Los correos electrónicos no coinciden');
+        }
+
         if (hasErrors) {
             e.preventDefault();
         }
     });
+
+    if (document.getElementById('next-button')) {
+        document.getElementById('next-button').addEventListener('click', function() {
+            document.getElementById('section-1').style.display = 'none';
+            document.getElementById('section-2').style.display = 'block';
+        });
+    }
+    
+    if (document.getElementById('prev-button')) {
+        document.getElementById('prev-button').addEventListener('click', function() {
+            document.getElementById('section-2').style.display = 'none';
+            document.getElementById('section-1').style.display = 'block';
+        });
+    }
 });
