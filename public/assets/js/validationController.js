@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Seleccionar todos los campos de nombre y apellidos
-    const nameInputs = document.querySelectorAll('#name, #last_name, #second_last_name');
+    const nameInputs = document.querySelectorAll('#name, #first_lastname, #second_lastname');
+
     
     // Expresión regular que solo permite letras y espacios
     const nameRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]*$/;
