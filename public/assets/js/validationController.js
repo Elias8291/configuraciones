@@ -88,9 +88,10 @@ document.addEventListener("DOMContentLoaded", function() {
         const hasName = name.length >= 2;
         const hasFirstLastname = firstLastname.length >= 2;
         const hasEmail = email !== '';
-        const emailsMatch = email === emailConfirmation || emailConfirmation === '';
+        const hasEmailConfirmation = emailConfirmation !== '' && emailConfirmationInput;
+        const emailsMatch = email === emailConfirmation;
 
-        if (hasName && hasFirstLastname && hasEmail && emailsMatch) {
+        if (hasName && hasFirstLastname && hasEmail && hasEmailConfirmation && emailsMatch) {
             nextButton.disabled = false;
         } else {
             nextButton.disabled = true;
@@ -171,7 +172,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!validateName(secondLastnameInput, 2, 50)) hasErrors = true;
 
         if (emailInput && !validateEmail(emailInput)) hasErrors = true;
-        if (emailConfirmationInput && emailConfirmationInput.value.trim() !== '' && !validateEmail(emailConfirmationInput)) hasErrors = true;
+        if (emailConfirmationInput && emailConfirmationInput.value.trim() === '') {
+            hasErrors = true;
+            showErrorMessage(emailConfirmationInput, 'La confirmación de correo electrónico es obligatoria');
+        } else if (emailConfirmationInput && !validateEmail(emailConfirmationInput)) hasErrors = true;
         if (emailInput && emailConfirmationInput && emailInput.value !== emailConfirmationInput.value) {
             hasErrors = true;
             showErrorMessage(emailConfirmationInput, 'Los correos electrónicos no coinciden');
