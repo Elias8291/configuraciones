@@ -7,18 +7,18 @@
 </head>
 <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; margin: 0; padding: 0;">
     <div style="max-width: 650px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <div style="background: linear-gradient(135deg, #004a87 0%, #0066b3 100%); color: white; padding: 25px; text-align: center;">
+        <div style="background: linear-gradient(135deg, #800000 0%, #a52a2a 100%); color: white; padding: 25px; text-align: center;">
             <img src="cid:logoSe" alt="Logo Secretaría de Administración" style="width: 100px; height: auto; margin-bottom: 15px;" />
-            <h1 style="margin: 0; font-size: 24px; font-weight: 600;">Bienvenido a nuestra Página Web de Proveedores</h1>
+            <h1 style="margin: 0 auto; font-size: 24px; font-weight: 600; max-width: 90%;">Bienvenido a nuestra Página Web de Proveedores</h1>
         </div>
         
         <div style="padding: 30px;">
-            <p style="font-size: 18px; margin-bottom: 20px; color: #004a87;">Estimado proveedor,</p>
+            <p style="font-size: 18px; margin-bottom: 20px; color: #800000;">Estimado proveedor,</p>
             
             <p style="margin-bottom: 15px;">Le damos la bienvenida a nuestra página web de proveedores. Agradecemos sinceramente su interés en formar parte de nuestra dependencia y en registrar su información para continuar con el proceso de inscripción.</p>
 
             
-            <div style="background-color: #f5f9fc; border-left: 4px solid #004a87; padding: 15px; margin: 20px 0;">
+            <div style="background-color: #f5f9fc; border-left: 4px solid #800000; padding: 15px; margin: 20px 0;">
                 <p style="margin-top: 0;"><strong>Sus datos de acceso son los siguientes:</strong></p>
                 <ul style="padding-left: 20px;">
                     <li style="margin-bottom: 10px; list-style-type: none;">📋 <strong>Nombre de usuario:</strong> {{ $username }}</li>
@@ -29,7 +29,7 @@
             <p style="margin-bottom: 15px;">Por seguridad, le recomendamos cambiar su contraseña al iniciar sesión por primera vez.</p>
             
             <div style="text-align: center; margin: 25px 0;">
-                <a href="#" style="display: inline-block; background-color: #004a87; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: 500;">Iniciar Sesión Ahora</a>
+                <a href="#" style="display: inline-block; background-color: #800000; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: 500;">Iniciar Sesión Ahora</a>
             </div>
             
             <p style="margin-bottom: 15px;">Puede continuar con sus trámites en nuestra página web en cualquier momento. Estamos comprometidos a brindarle una experiencia eficiente y satisfactoria.</p>
