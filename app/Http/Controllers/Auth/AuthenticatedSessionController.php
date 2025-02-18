@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -25,12 +27,31 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $credentials = $request->only('username', 'password');
 
-        $request->session()->regenerate();
+        // Attempt to authenticate the user
+        if (Auth::attempt($credentials)) {
+            // Regenerate session if authenticated
+            $request->session()->regenerate();
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // Check if the username exists
+        $user = User::where('username', $request->username)->first();
+
+        if (!$user) {
+            // Return error for invalid username
+            return back()->withErrors([
+                'username' => trans('auth.user_failed'),
+            ])->withInput();
+        }
+
+        // Return error for incorrect password
+        return back()->withErrors([
+            'password' => trans('auth.password'),
+        ])->withInput();
     }
+
 
     /**
      * Destroy an authenticated session.

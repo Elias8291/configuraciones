@@ -24,7 +24,7 @@
     <script src="{{ asset('assets/js/navigationController.js') }}" type="module" defer></script>
     <script src="{{ asset('assets/js/passwordController.js') }}" type="module" defer></script>
     <script src="{{ asset('assets/js/validationController.js') }}" type="module" defer></script>
-
+    <script src="{{ asset('assets/js/login-validation.js') }}" type="module" defer></script>
 </head>
 <body>
     <!-- Loading Screen -->

@@ -236,31 +236,24 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // LOGIN FORM CODE
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
-        // SHOW/HIDE PASSWORD TOGGLE
         const togglePassword = loginForm.querySelector('.toggle-password');
         if (togglePassword) {
             togglePassword.addEventListener('click', function() {
                 const passwordInput = loginForm.querySelector('#password');
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    this.querySelector('i').classList.remove('fa-eye');
-                    this.querySelector('i').classList.add('fa-eye-slash');
-                } else {
-                    passwordInput.type = 'password';
-                    this.querySelector('i').classList.remove('fa-eye-slash');
-                    this.querySelector('i').classList.add('fa-eye');
+                if (passwordInput) {
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        this.querySelector('i').classList.remove('fa-eye');
+                        this.querySelector('i').classList.add('fa-eye-slash');
+                    } else {
+                        passwordInput.type = 'password';
+                        this.querySelector('i').classList.remove('fa-eye-slash');
+                        this.querySelector('i').classList.add('fa-eye');
+                    }
                 }
             });
         }
-
-        
-        loginForm.setAttribute('novalidate', '');
-        
-        loginForm.addEventListener('submit', function(e) {
-          
-        });
     }
 });
