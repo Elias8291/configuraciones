@@ -25,7 +25,6 @@
     <script src="{{ asset('assets/js/passwordController.js') }}" type="module" defer></script>
     <script src="{{ asset('assets/js/validationController.js') }}" type="module" defer></script>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
     <!-- Loading Screen -->

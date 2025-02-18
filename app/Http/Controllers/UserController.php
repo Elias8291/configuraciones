@@ -8,15 +8,17 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegisteredMail; // Asegúrate de importar el Mailable
-
+use Spatie\Permission\Traits\HasRoles;
 class UserController extends Controller
 {
+    use HasRoles;
     /**
      * Handle the registration form submission and store the user data.
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
+  
     public function store(Request $request)
     {
         // Validación de los datos del formulario

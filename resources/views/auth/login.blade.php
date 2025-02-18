@@ -14,7 +14,6 @@
     <div class="form-group">
         <label for="password">Contraseña</label>
         <div class="password-field">
-            <!-- Cambié el id aquí a 'password' -->
             <input id="password" class="form-control" type="password" name="password" required autocomplete="off">
             <button type="button" class="toggle-password">
                 <i class="fa fa-eye"></i>
