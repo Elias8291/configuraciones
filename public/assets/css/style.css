@@ -1025,6 +1025,8 @@ html, body {
     box-shadow: 0 6px 15px rgba(var(--primary-color-rgb), 0.35);
 }
 
+
+
 /* Modal Animation */
 .modal.fade .modal-dialog {
     transform: scale(0.8);
@@ -1084,3 +1086,388 @@ html, body {
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
 }
 
+
+
+/* Keep the background logo as is while enhancing other elements */
+body::before {
+    background-size: 10% auto; /* Keep original size */
+    opacity: 0.04; /* Keep original opacity */
+}
+
+/* Enhanced Card Styles with Elegant Shadows */
+.login-container, .register-container {
+    border-radius: 28px;
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.05),
+                -12px -12px 24px rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+    position: relative;
+}
+
+.login-container::before, .register-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary-color), #b03559, var(--primary-dark));
+    background-size: 200% 100%;
+    animation: gradientAnimation 3s linear infinite;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Luxurious Form Controls */
+.form-group .form-control {
+    border-radius: 16px;
+    border: 2px solid transparent;
+    background: #f9fafb;
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05),
+                inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    letter-spacing: 0.2px;
+    transition: all 0.4s ease;
+}
+
+.form-group .form-control:focus {
+    background: #ffffff;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 4px rgba(157, 36, 73, 0.1),
+                inset 1px 1px 3px rgba(0, 0, 0, 0.02),
+                inset -1px -1px 3px rgba(255, 255, 255, 0.7);
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    opacity: 0.85;
+}
+
+.form-group:focus-within label {
+    color: var(--primary-color);
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+/* Elegant Button Styles */
+.login-button, .register-button {
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    background-size: 200% 100%;
+    box-shadow: 0 10px 20px rgba(157, 36, 73, 0.2),
+                0 6px 6px rgba(157, 36, 73, 0.1),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.1),
+                inset 0 2px 5px rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    padding: 1rem;
+    position: relative;
+    transition: all 0.4s ease;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.login-button:hover, .register-button:hover {
+    background-position: 100% 0;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(157, 36, 73, 0.25),
+                0 10px 10px rgba(157, 36, 73, 0.15);
+}
+
+.login-button::before, .register-button::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary-color), transparent, var(--primary-dark));
+    z-index: -1;
+    transform: scale(0.98);
+    animation: borderGlow 2s linear infinite;
+    border-radius: 16px;
+    filter: blur(5px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.login-button:hover::before, .register-button:hover::before {
+    opacity: 1;
+}
+
+@keyframes borderGlow {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 300% 0%; }
+}
+
+/* Beautiful Nav Tabs */
+.nav-tabs {
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    border-bottom: none;
+}
+
+.nav-tabs .nav-link {
+    border-radius: 12px;
+    padding: 0.8rem 2.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    position: relative;
+    transition: all 0.4s ease;
+    border: none;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05),
+                -2px -2px 5px rgba(255, 255, 255, 0.8);
+    background: linear-gradient(145deg, #f8f9fa, #ffffff);
+}
+
+.nav-tabs .nav-link.active {
+    color: white;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1),
+                inset -2px -2px 5px rgba(255, 255, 255, 0.05),
+                0 8px 15px rgba(157, 36, 73, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-tabs .nav-link:not(.active):hover {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+/* Refined Header Styles */
+.login-header h1, .register-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0px 2px 2px rgba(157, 36, 73, 0.05);
+    letter-spacing: 0.5px;
+}
+
+.login-header h1::after, .register-header h1::after {
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+    border-radius: 4px;
+    width: 60%;
+    bottom: -8px;
+}
+
+/* Enhanced Dashboard Elements */
+.dashboard-sidebar {
+    background: linear-gradient(180deg, #ffffff, #f8f9fa);
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-nav .nav-link {
+    border-radius: 12px;
+    margin: 5px 10px;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-nav .nav-link.active {
+    background: linear-gradient(135deg, rgba(157, 36, 73, 0.1), rgba(157, 36, 73, 0.05));
+    border-left: 4px solid var(--primary-color);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.02),
+                -2px -2px 5px rgba(255, 255, 255, 0.8);
+}
+
+.sidebar-nav .nav-link:hover:not(.active) {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.02),
+                -2px -2px 5px rgba(255, 255, 255, 0.8);
+    transform: translateX(3px);
+}
+
+/* Beautiful Modal Styling */
+.modal-content {
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1),
+                0 15px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    padding: 1.75rem 2rem;
+}
+
+.modal-header .modal-title {
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.modal-body {
+    padding: 2.5rem 2rem;
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+}
+
+/* Refined Footer */
+.login-footer, .dashboard-footer {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+}
+
+.login-footer a, .dashboard-footer a {
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.login-footer a::after, .dashboard-footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+    transition: width 0.3s ease;
+}
+
+.login-footer a:hover::after, .dashboard-footer a:hover::after {
+    width: 100%;
+}
+
+/* Password Toggle Beautification */
+.password-field {
+    position: relative;
+}
+
+.toggle-password {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #f8f9fa, #ffffff);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05),
+                -2px -2px 5px rgba(255, 255, 255, 0.8);
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1),
+                -3px -3px 8px rgba(255, 255, 255, 0.9);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--primary-light), rgba(157, 36, 73, 0.2));
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(var(--primary-color), var(--primary-dark));
+}
+
+/* Modern Loading Screen */
+.loading-screen {
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.97), rgba(248, 249, 250, 0.95));
+}
+
+.progress-bar {
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.03);
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.progress {
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-dark), var(--primary-color));
+    background-size: 200% 100%;
+    animation: progressGradient 2s linear infinite;
+}
+
+@keyframes progressGradient {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Enhanced Success Modal */
+#successModal i.fas.fa-envelope {
+    color: var(--primary-color);
+    filter: drop-shadow(0 2px 4px rgba(157, 36, 73, 0.3));
+    animation: floatIcon 2s infinite alternate ease-in-out;
+}
+
+@keyframes floatIcon {
+    0% { transform: translateY(0) rotate(0); }
+    100% { transform: translateY(-10px) rotate(5deg); }
+}
+
+/* Neomorphic Card Style for Dashboard Widgets */
+.widget-card {
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border-radius: 20px;
+    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.05),
+                -8px -8px 16px rgba(255, 255, 255, 0.9);
+    padding: 1.5rem;
+    transition: all 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.widget-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 12px 12px 20px rgba(0, 0, 0, 0.07),
+                -12px -12px 20px rgba(255, 255, 255, 0.95);
+}
+
+/* Subtle Background Patterns */
+.content-wrapper {
+    position: relative;
+}
+
+.content-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(157, 36, 73, 0.03) 0%, transparent 8%),
+        radial-gradient(circle at 90% 80%, rgba(157, 36, 73, 0.03) 0%, transparent 8%),
+        radial-gradient(circle at 50% 50%, rgba(44, 62, 80, 0.02) 0%, transparent 10%);
+    background-size: 120px 120px, 150px 150px, 200px 200px;
+    background-position: 0 0, 0 0, 0 0;
+    z-index: -1;
+    opacity: 0.8;
+}
