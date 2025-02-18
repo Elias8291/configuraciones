@@ -1,16 +1,34 @@
 document.addEventListener("DOMContentLoaded", function() {
     let tipoPersona = document.getElementById('tipo_persona');
     let rfcInput = document.getElementById('rfc');
-    if (tipoPersona && rfcInput) {
+    let razonSocialInput = document.getElementById('razon_social');
+
+    if (tipoPersona && rfcInput && razonSocialInput) {
         tipoPersona.addEventListener('change', function() {
+            // Limpiar campos al cambiar de tipo de persona
+            rfcInput.value = '';
+            razonSocialInput.value = '';
+
             if (this.value === 'fisica') {
                 rfcInput.setAttribute('maxlength', '13');
                 rfcInput.placeholder = 'Ejemplo: ABCD123456XYZ';
+
+                // Aplicar restricción en razón social (solo letras y espacios)
+                razonSocialInput.setAttribute('placeholder', 'Ingresa solo letras y espacios');
+                razonSocialInput.addEventListener('input', validarRazonSocial);
             } else {
                 rfcInput.setAttribute('maxlength', '12');
                 rfcInput.placeholder = 'Ejemplo: ABC123456XYZ';
+
+                // Eliminar restricción en razón social
+                razonSocialInput.setAttribute('placeholder', 'Razón social');
+                razonSocialInput.removeEventListener('input', validarRazonSocial);
             }
         });
+    }
+
+    function validarRazonSocial() {
+        this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
     }
 
     const nameInput = document.getElementById('name');
