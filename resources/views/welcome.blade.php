@@ -20,9 +20,43 @@
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="loginForm">
                     @include('auth.login')
+                    <div class="text-center mt-3">
+                        <a href="{{ route('password.request') }}" data-bs-target="#forgotPasswordModal" class="text-muted">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+
+
+                   
                 </div>
                 <div class="tab-pane fade" id="registerForm">
                     @include('auth.register')
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para la recuperación de contraseña -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="forgotPasswordModalLabel">Recuperación de Contraseña</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ route('password.email') }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary w-100">Enviar Enlace de Recuperación</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
