@@ -2,6 +2,13 @@
 document.addEventListener("DOMContentLoaded", function() {
     // "Next" button - Shows the second section
     let nextButton = document.getElementById('next-button');
+    let requiredFields = document.querySelectorAll('#section-1 [required]');
+
+    function checkFields() {
+        let allFilled = Array.from(requiredFields).every(field => field.value.trim() !== '');
+        nextButton.disabled = !allFilled;
+    }
+
     if (nextButton) {
         nextButton.addEventListener('click', function() {
             document.getElementById('section-1').style.display = 'none';
@@ -19,4 +26,14 @@ document.addEventListener("DOMContentLoaded", function() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
+
+    requiredFields.forEach(field => {
+        field.addEventListener('input', checkFields);
+    });
+
+    document.querySelector('form')?.addEventListener('reset', function() {
+        setTimeout(checkFields, 50);
+    });
+
+    checkFields();
 });

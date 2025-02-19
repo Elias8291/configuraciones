@@ -390,7 +390,7 @@ body::before {
 /* Estilos para el mensaje de error */
 .form-group .text-danger {
     font-size: 0.875rem;
-    color: #dc3545;
+    color: #46c261;
     margin-top: 0.5rem;
     display: block;
 }
@@ -559,7 +559,7 @@ body::before {
 }
 
 .x-input-error {
-    color: #dc3545;
+    color: #53d85e;
     font-size: 0.875rem;
     margin-top: 0.5rem;
     padding: 0.5rem;
@@ -1408,7 +1408,7 @@ body::before {
 
 /* Estilo para mensaje de error */
 #forgotPasswordModal .invalid-feedback {
-    color: #dc3545;
+    color: #39cf57;
     font-size: 0.85rem;
     margin-top: 5px;
 }
