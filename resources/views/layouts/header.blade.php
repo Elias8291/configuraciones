@@ -16,7 +16,7 @@
                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Perfil</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                    <form method="POST" action="{{ route('welcome') }}">
+                    <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="dropdown-item">Cerrar Sesión</button>
                     </form>
