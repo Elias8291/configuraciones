@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (loginTab && registerForm) {
         loginTab.addEventListener("click", function() {
             registerForm.reset();
+            document.querySelectorAll('.text-danger').forEach(el => el.remove()); // Eliminar errores al cambiar a Login
             document.getElementById('section-1').style.display = 'block';
             document.getElementById('section-2').style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
