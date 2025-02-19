@@ -7,6 +7,7 @@
     --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     --gradient-bg: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     --primary-color-rgb: R, G, B;
+    --accent-color: #5A1D30; 
 }
 
 html,
@@ -662,126 +663,6 @@ input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Add to your existing style.css */
-
-.dashboard-body {
-    min-height: 100vh;
-    background: var(--gradient-bg);
-}
-
-.dashboard-container {
-    display: flex;
-    min-height: 100vh;
-}
-
-/* Sidebar Styles */
-.dashboard-sidebar {
-    width: 280px;
-    background: white;
-    box-shadow: var(--box-shadow);
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-.sidebar-header {
-    padding: 1.5rem;
-    text-align: center;
-}
-
-.sidebar-logo {
-    max-width: 150px;
-    height: auto;
-}
-
-.sidebar-nav {
-    padding: 1rem 0;
-}
-
-.sidebar-nav .nav-link {
-    padding: 0.75rem 1.5rem;
-    color: var(--secondary-color);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    transition: all 0.3s ease;
-}
-
-.sidebar-nav .nav-link:hover,
-.sidebar-nav .nav-link.active {
-    background: var(--primary-light);
-    color: var(--primary-color);
-}
-
-.sidebar-nav .nav-link i {
-    width: 20px;
-    text-align: center;
-}
-
-/* Header Styles */
-.dashboard-header {
-    background: white;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: var(--box-shadow);
-}
-
-.sidebar-toggle {
-    background: none;
-    border: none;
-    color: var(--secondary-color);
-    font-size: 1.25rem;
-    cursor: pointer;
-    padding: 0.5rem;
-}
-
-.user-menu .dropdown-toggle {
-    background: none;
-    border: none;
-    color: var(--secondary-color);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.user-menu .dropdown-toggle i {
-    font-size: 1.5rem;
-}
-
-/* Main Content Styles */
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.content-wrapper {
-    flex: 1;
-    padding: 2rem;
-    background: var(--gradient-bg);
-}
-
-/* Footer Styles */
-.dashboard-footer {
-    background: white;
-    padding: 1rem 2rem;
-    text-align: center;
-    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .dashboard-sidebar {
-        position: fixed;
-        left: -280px;
-        height: 100vh;
-    }
-
-    .dashboard-sidebar.show {
-        left: 0;
-    }
-}
 
 
 /* Reset básico y estilos base */
@@ -805,14 +686,14 @@ html, body {
     min-height: 100vh;
     width: 100%;
     position: relative;
-    background: var(--gradient-bg);
+    background: transparent;
 }
 
 /* Estilos del sidebar */
 .dashboard-sidebar {
     width: 280px;
     min-height: 100vh;
-    background: white;
+    background: transparent;
     position: fixed;
     left: 0;
     top: 0;
@@ -845,15 +726,255 @@ html, body {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    text-decoration: none;
+    border-radius: 4px; /* Bordes redondeados */
+    position: relative; /* Para la animación del subrayado */
+    transition: color 0.3s ease, background 0.3s ease; /* Transiciones suaves */
+}
+
+/* Estilo del enlace al pasar el ratón */
+.sidebar-nav .nav-link:hover {
+    color: white; /* Cambia el color del texto al pasar el ratón */
+    background: var(--accent-color); /* Fondo al pasar el ratón */
+}
+
+/* Subrayado animado */
+.sidebar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px; /* Altura de la línea subrayada */
+    background: var(--primary-color); /* Color de subrayado */
+    left: 0;
+    bottom: -2px; /* Posición del subrayado */
+    transform: scaleX(0); /* Inicialmente no visible */
+    transition: transform 0.3s ease; /* Animación suave */
+}
+
+/* Efecto al pasar el ratón sobre el enlace */
+.sidebar-nav .nav-link:hover::after {
+    transform: scaleX(1); /* Mostrar el subrayado al pasar el ratón */
+}
+
+/* Estilo del enlace activo */
+.sidebar-nav .nav-link.active {
+    color: white; /* Color del texto para el enlace activo */
+    background: var(--primary-color); /* Fondo para el enlace activo */
+    box-shadow: var(--box-shadow); /* Sombra para el enlace activo */
+    font-weight: bold; /* Negrita para el enlace activo */
+}
+
+/* Estilos para los iconos */
+.sidebar-nav .nav-link i {
+    font-size: 1.2rem; /* Tamaño del icono */
+    transition: transform 0.3s ease; /* Transición para el icono */
+}
+
+/* Efecto de rotación en los iconos al pasar el ratón */
+.sidebar-nav .nav-link:hover i {
+    transform: rotate(15deg); /* Rotar el icono ligeramente al pasar el ratón */
+}
+
+.sidebar-header {
+    background: var(--primary-color);
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: none;
+}
+
+.sidebar-logo {
+    max-width: 180px;
+    height: auto;
+    filter: brightness(0) invert(1); /* Cambia el color del logo a blanco */
+}
+
+.sidebar-nav {
+    padding: 1rem 0;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
+.sidebar-nav .nav-link {
+    padding: 0.75rem 1.5rem;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     transition: all 0.3s ease;
     text-decoration: none;
+    border-radius: var(--border-radius);
+    margin: 0.5rem 1rem;
 }
 
 .sidebar-nav .nav-link:hover,
 .sidebar-nav .nav-link.active {
     background: var(--primary-light);
     color: var(--primary-color);
+    box-shadow: var(--box-shadow);
 }
+
+.sidebar-nav .nav-link i {
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+/* Mejoras visuales para el header */
+.dashboard-header {
+    background: white;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    box-shadow: var(--box-shadow);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.dashboard-header .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dashboard-header .header-actions .btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dashboard-header .header-actions .btn:hover {
+    background: darken(var(--primary-color), 10%);
+}
+
+/* Mejoras visuales para el contenido principal */
+.content-wrapper {
+    flex: 1;
+    padding: 2rem;
+    background: var(--gradient-bg);
+    min-height: calc(100vh - 140px);
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    box-shadow: var(--box-shadow);
+}
+
+/* Mejoras visuales para el footer */
+.dashboard-footer {
+    background: white;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
+    border-top: 1px solid #e0e0e0;
+}
+
+.dashboard-footer p {
+    margin: 0;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+/* Mejoras visuales para el menú de usuario */
+.user-menu .dropdown-toggle {
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+}
+
+.user-menu .dropdown-toggle:hover {
+    background: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.user-menu .dropdown-menu {
+    right: 0;
+    left: auto;
+    min-width: 200px;
+    padding: 0.5rem 0;
+    border: none;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    background: white;
+}
+
+.user-menu .dropdown-item {
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--secondary-color);
+    transition: all 0.3s ease;
+}
+
+.user-menu .dropdown-item:hover {
+    background: var(--primary-light);
+    color: var(--primary-color);
+}
+
+/* Estilos responsivos mejorados */
+@media (max-width: 768px) {
+    .dashboard-sidebar {
+        transform: translateX(-100%);
+        width: 250px;
+    }
+
+    .dashboard-sidebar.show {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .content-wrapper {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+
+    .dashboard-header {
+        padding: 0 1rem;
+    }
+
+    .dashboard-footer {
+        padding: 1rem;
+    }
+}
+
+/* Animaciones adicionales */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-sidebar.show {
+    animation: fadeIn 0.3s ease;
+}
+
+.user-menu .dropdown-menu {
+    animation: fadeIn 0.3s ease;
+}
+
 
 /* Contenido principal */
 .main-content {
@@ -897,6 +1018,8 @@ html, body {
     justify-content: center;
     box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
 }
+
+
 
 /* Estilos responsivos */
 @media (max-width: 768px) {
@@ -1302,6 +1425,64 @@ body::before {
                 -2px -2px 5px rgba(255, 255, 255, 0.8);
     transform: translateX(3px);
 }
+/* Estilos para el formulario de registro */
+.additional-content {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.additional-content h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.form-container {
+    background-color: #f8f9fa; /* Fondo gris claro */
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.btn {
+    background-color: #9D2449;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #7a1c38;
+}
+
+
+
 
  /* Estilo para el modal de recuperación de contraseña */
 #forgotPasswordModal .modal-content {
@@ -1499,3 +1680,5 @@ body::before {
     background-color: #6c757d;
     border-color: #6c757d;
 }
+
+

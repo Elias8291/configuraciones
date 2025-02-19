@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegisteredMail; // Asegúrate de importar el Mailable
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class RegisteredUserController extends Controller
 {
@@ -28,33 +29,49 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'first_lastname' => ['required', 'string', 'max:255'],
-            'second_lastname' => ['nullable', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'email_confirmation' => ['required', 'same:email'],
+            'name' => 'required|string|max:30',
+            'first_lastname' => 'required|string|max:30',
+            'second_lastname' => 'nullable|string|max:30',
+            'email' => 'required|email|max:80|unique:users,email',
+            'rfc' => 'required|string|max:13|unique:person_data,rfc',
+            'razon_social' => 'required|string|max:200',
+            'tipo_persona' => 'required|in:fisica,moral',
         ]);
     
         $password = $this->generateRandomPassword();
         $username = $this->generateUsername($request->name, $request->first_lastname);
     
-        $user = User::create([
-            'name' => $request->name,
-            'last_name' => $request->first_lastname,
-            'second_last_name' => $request->second_lastname,
-            'email' => $request->email,
-            'username' => $username,
-            'password' => Hash::make($password),
-            'status' => 'Activo',
-        ]);
+        DB::beginTransaction();
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'last_name' => $request->first_lastname,
+                'second_last_name' => $request->second_lastname,
+                'email' => $request->email,
+                'username' => $username,
+                'password' => Hash::make($password),
+                'status' => 'Activo',
+            ]);
     
-        $this->sendRegistrationEmail($user, $username, $password);
+            $legalPersonValue = $request->tipo_persona === 'moral' ? '1' : null;
     
-        return redirect()->route('welcome')->with('success', 'Usuario registrado con éxito. Revisa tu correo para ver tu nombre de usuario y contraseña temporal.');
-
+            \App\Models\PersonData::create([
+                'user_id' => $user->id,
+                'rfc' => $request->rfc,
+                'legal_person' => $legalPersonValue,
+                'business_name' => $request->razon_social,
+                'status' => 'Pending',
+            ]);
+    
+            DB::commit();
+            return redirect()->route('welcome')->with('success', 'Usuario registrado con éxito. Revisa tu correo para ver tu nombre de usuario y contraseña temporal.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => 'Ocurrió un error al registrar el usuario.'])->withInput();
+        }
     }
     
     

@@ -54,4 +54,9 @@ class User extends Authenticatable
         'last_login',
         'deleted_at',  // Add this to support soft deletes
     ];
+
+    public function personData()
+    {
+        return $this->hasOne(PersonData::class);
+    }
 }

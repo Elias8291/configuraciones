@@ -22,4 +22,5 @@ Route::middleware(['auth', 'verified', 'no-cache'])->group(function () {
     Route::post('/register', [UserController::class, 'register'])->name('register');
 });
 
+
 require __DIR__ . '/auth.php';
