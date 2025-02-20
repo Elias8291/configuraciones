@@ -32,6 +32,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         try {
+            // Validar los datos del formulario
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'first_lastname' => ['required', 'string', 'max:255'],
@@ -43,9 +44,13 @@ class RegisteredUserController extends Controller
                 'razon_social' => ['required', 'string'],
             ]);
             
+            // Generar una contraseña aleatoria
             $password = $this->generateRandomPassword();
+            
+            // Generar un nombre de usuario basado en el nombre y apellido
             $username = $this->generateUsername($request->name, $request->first_lastname);
             
+            // Crear el usuario en la tabla `users`
             $user = User::create([
                 'name' => $request->name,
                 'last_name' => $request->first_lastname,
@@ -59,11 +64,27 @@ class RegisteredUserController extends Controller
                 'razon_social' => $request->razon_social,
             ]);
             
+            // Crear el registro en la tabla `person_data`
+            $personData = [
+                'user_id' => $user->id, // Asignar el ID del usuario recién creado
+                'legal_person' => $request->tipo_persona, // Usar el valor de tipo_persona
+                'rfc' => $request->rfc, // Usar el RFC proporcionado
+                'business_name' => $request->razon_social, // Usar la razón social
+                'status' => 'Pendiente', // Establecer el estado como "Pendiente"
+                // El resto de las columnas se dejarán como null por defecto
+            ];
+            
+            // Insertar en la tabla `person_data`
+            DB::table('person_data')->insert($personData);
+            
+            // Enviar correo de registro al usuario
             $this->sendRegistrationEmail($user, $username, $password);
             
+            // Redirigir con mensaje de éxito
             return redirect()->route('welcome')->with('success', 'Usuario registrado con éxito. Revisa tu correo electrónico para tu nombre de usuario y contraseña temporal.');
-
+    
         } catch (ValidationException $e) {
+            // Si hay errores de validación, redirigir de vuelta con los errores
             return redirect()->back()
                 ->withErrors($e->validator)
                 ->withInput()
