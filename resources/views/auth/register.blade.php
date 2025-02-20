@@ -78,6 +78,7 @@
                 <div class="form-group">
                     <label for="tipo_persona">Tipo de Persona *</label>
                     <select id="tipo_persona" class="form-control" name="tipo_persona" required>
+                        <option value="" selected disabled>Seleccionar opción</option>
                         <option value="fisica">Persona Física</option>
                         <option value="moral">Persona Moral</option>
                     </select>

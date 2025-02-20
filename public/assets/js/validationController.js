@@ -29,6 +29,33 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             });
         }
+            // ✅ FUNCIÓN PARA VALIDAR RFC SEGÚN EL TIPO DE PERSONA
+            function validarRFC(rfc, tipo) {
+                let regexFisica = /^[A-ZÑ&]{4}\d{6}[A-Z\d]{3}$/; // Persona física
+                let regexMoral = /^[A-ZÑ&]{3}\d{6}[A-Z\d]{3}$/; // Persona moral
+        
+                if (tipo === 'fisica') {
+                    return regexFisica.test(rfc);
+                } else {
+                    return regexMoral.test(rfc);
+                }
+            }
+        
+            // APLICAR VALIDACIÓN Y FILTRO AL INPUT RFC
+            rfcInput.addEventListener('input', function() {
+                let tipo = tipoPersona.value;
+                let rfc = rfcInput.value.toUpperCase(); // Convertir a mayúsculas automáticamente
+                
+                // 🔹 FILTRAR SOLO LETRAS MAYÚSCULAS, NÚMEROS Y EL CARÁCTER "&"
+                rfc = rfc.replace(/[^A-ZÑ&0-9]/g, '');
+                rfcInput.value = rfc; // Asignar el valor corregido
+        
+                if (!validarRFC(rfc, tipo)) {
+                    showErrorMessage(rfcInput, 'RFC inválido, verifique el formato.');
+                } else {
+                    removeErrorMessage(rfcInput);
+                }
+            });
 
         // VALIDATE BUSINESS NAME
         function validarRazonSocial() {
