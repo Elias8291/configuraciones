@@ -19,6 +19,9 @@
     <script src="{{ asset('assets/js/passwordController.js') }}" type="module" defer></script>
     <script src="{{ asset('assets/js/validationController.js') }}" type="module" defer></script>
     <script src="{{ asset('assets/js/login-validation.js') }}" type="module" defer></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     @stack('scripts')
 </head>
 

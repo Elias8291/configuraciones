@@ -157,5 +157,6 @@ return [
     'uppercase' => 'El campo :attribute debe estar en mayúsculas.',
     'url' => 'El campo :attribute debe ser una URL válida.',
     'uuid' => 'El campo :attribute debe ser un UUID válido.',
+    'duplicate' => 'El valor :attribute ya está duplicado.',
 
 ];
