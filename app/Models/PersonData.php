@@ -2,14 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PersonData extends Model
 {
-    use HasFactory;
+    protected $table = 'person_data';
 
-    protected $fillable = ['user_id', 'legal_person', 'rfc', 'curp', 'business_name', 'tradename', 'web_page', 'status', 'activities', 'economic_sector', 'classification_id', 'domicile_id'];
+    protected $fillable = [
+        'user_id',
+        'legal_person',
+        'rfc',
+        'curp',
+        'business_name',
+        'tradename',
+        'web_page',
+        'status',
+        'activities',
+        'economic_sector',
+        'classification_id',
+        'address_id',
+        'representative_id',
+    ];
 
     public function user()
     {
@@ -21,23 +34,23 @@ class PersonData extends Model
         return $this->belongsTo(Classification::class);
     }
 
-    public function domicile()
+    public function address()
     {
-        return $this->belongsTo(Domicile::class);
+        return $this->belongsTo(Address::class);
+    }
+
+    public function representative()
+    {
+        return $this->belongsTo(Representative::class);
     }
 
     public function applicants()
     {
-        return $this->hasOne(Applicant::class);
+        return $this->hasMany(Applicant::class);
     }
 
     public function providers()
     {
-        return $this->hasOne(Provider::class);
-    }
-
-    public function representatives()
-    {
-        return $this->hasMany(Representative::class);
+        return $this->hasMany(Provider::class);
     }
 }

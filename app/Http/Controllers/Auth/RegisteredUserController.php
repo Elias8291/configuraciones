@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UserRegisteredMail; // Asegúrate de importar el Mailable
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Validation\ValidationException;
 class RegisteredUserController extends Controller
 {
     /**
@@ -31,49 +31,45 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:30',
-            'first_lastname' => 'required|string|max:30',
-            'second_lastname' => 'nullable|string|max:30',
-            'email' => 'required|email|max:80|unique:users,email',
-            'rfc' => 'required|string|max:13|unique:person_data,rfc',
-            'razon_social' => 'required|string|max:200',
-            'tipo_persona' => 'required|in:fisica,moral',
-        ]);
-    
-        $password = $this->generateRandomPassword();
-        $username = $this->generateUsername($request->name, $request->first_lastname);
-    
-        DB::beginTransaction();
         try {
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'first_lastname' => ['required', 'string', 'max:255'],
+                'second_last_name' => ['nullable', 'string', 'max:255'], 
+                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+                'email_confirmation' => ['required', 'same:email'],
+                'tipo_persona' => ['required', 'string', 'in:fisica,moral'],
+                'rfc' => ['required', 'string', 'max:13'],
+                'razon_social' => ['required', 'string'],
+            ]);
+            
+            $password = $this->generateRandomPassword();
+            $username = $this->generateUsername($request->name, $request->first_lastname);
+            
             $user = User::create([
                 'name' => $request->name,
                 'last_name' => $request->first_lastname,
-                'second_last_name' => $request->second_lastname,
+                'second_last_name' => $request->second_last_name,
                 'email' => $request->email,
                 'username' => $username,
                 'password' => Hash::make($password),
                 'status' => 'Activo',
-            ]);
-    
-            $legalPersonValue = $request->tipo_persona === 'moral' ? '1' : null;
-    
-            \App\Models\PersonData::create([
-                'user_id' => $user->id,
                 'rfc' => $request->rfc,
-                'legal_person' => $legalPersonValue,
-                'business_name' => $request->razon_social,
-                'status' => 'Pending',
+                'tipo_persona' => $request->tipo_persona,
+                'razon_social' => $request->razon_social,
             ]);
-    
-            DB::commit();
-            return redirect()->route('welcome')->with('success', 'Usuario registrado con éxito. Revisa tu correo para ver tu nombre de usuario y contraseña temporal.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'Ocurrió un error al registrar el usuario.'])->withInput();
+            
+            $this->sendRegistrationEmail($user, $username, $password);
+            
+            return redirect()->route('welcome')->with('success', 'Usuario registrado con éxito. Revisa tu correo electrónico para tu nombre de usuario y contraseña temporal.');
+
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput()
+                ->with('register_tab', true); 
         }
     }
-    
     
     
     /**

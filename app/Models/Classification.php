@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Classification extends Model
 {
-    use HasFactory;
+    protected $table = 'classifications';
 
-    protected $fillable = ['description'];
+    protected $fillable = [
+        'description',
+    ];
+
+    public function personData()
+    {
+        return $this->hasMany(PersonData::class);
+    }
 }

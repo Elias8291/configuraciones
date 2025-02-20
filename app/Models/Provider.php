@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Provider extends Model
 {
-    use HasFactory;
+    protected $table = 'providers';
 
-    protected $fillable = ['person_data_id', 'applicant_id', 'pv', 'procedure_type', 'validity'];
+    protected $fillable = [
+        'person_data_id',
+        'applicant_id',
+        'pv',
+        'procedure_type',
+        'validity',
+    ];
 
     public function personData()
     {

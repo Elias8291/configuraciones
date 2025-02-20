@@ -4,19 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Municipality extends Model
+class SettlementType extends Model
 {
-    protected $table = 'municipalities';
+    protected $table = 'settlement_types';
 
     protected $fillable = [
-        'state_id',
         'name',
     ];
-
-    public function state()
-    {
-        return $this->belongsTo(State::class);
-    }
 
     public function neighborhoods()
     {
