@@ -10,9 +10,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\UserRegisteredMail; // Asegúrate de importar el Mailable
+use App\Mail\UserRegisteredMail; 
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 class RegisteredUserController extends Controller
 {
@@ -32,29 +33,53 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         try {
-            $request->validate([
+            $rules = [
                 'name' => ['required', 'string', 'max:255'],
                 'first_lastname' => ['required', 'string', 'max:255'],
-                'second_last_name' => ['nullable', 'string', 'max:255'],
+                'second_lastname' => ['nullable', 'string', 'max:255'],
                 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
                 'email_confirmation' => ['required', 'same:email'],
                 'tipo_persona' => ['required', 'string', 'in:fisica,moral'],
-                'rfc' => ['required', 'string', 'max:13', 'unique:person_data,rfc'],
+                'rfc' => [
+                    'required',
+                    'string',
+                    'max:13',
+                    'unique:person_data,rfc',
+                    function ($attribute, $value, $fail) use ($request) {
+                        if ($request->tipo_persona === 'fisica') {
+                            if (!preg_match('/^[A-Z]{4}\d{6}[A-Z0-9]{3}$/', $value)) {
+                                $fail('El RFC no tiene un formato válido para persona física.');
+                            }
+                        } elseif ($request->tipo_persona === 'moral') {
+                            if (!preg_match('/^[A-Z]{3}\d{6}[A-Z0-9]{3}$/', $value)) {
+                                $fail('El RFC no tiene un formato válido para persona moral.');
+                            }
+                        }
+                    },
+                ],
                 'razon_social' => ['required', 'string'],
-            ], [
+            ];
+    
+            $messages = [
                 'email.unique' => 'Este correo electrónico ya está registrado.',
                 'rfc.unique' => 'Este RFC ya está en uso.',
                 'email_confirmation.same' => 'La confirmación del correo electrónico no coincide.',
                 'tipo_persona.in' => 'El tipo de persona debe ser "fisica" o "moral".',
-            ]);
-            
+            ];
+    
+            $validator = Validator::make($request->all(), $rules, $messages);
+    
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+    
             $password = $this->generateRandomPassword();
             $username = $this->generateUsername($request->name, $request->first_lastname);
-            
+    
             $user = User::create([
                 'name' => $request->name,
                 'last_name' => $request->first_lastname,
-                'second_last_name' => $request->second_last_name,
+                'second_last_name' => $request->second_lastname,
                 'email' => $request->email,
                 'username' => $username,
                 'password' => Hash::make($password),
@@ -63,7 +88,7 @@ class RegisteredUserController extends Controller
                 'tipo_persona' => $request->tipo_persona,
                 'razon_social' => $request->razon_social,
             ]);
-            
+    
             $personData = [
                 'user_id' => $user->id,
                 'legal_person' => $request->tipo_persona,
@@ -71,20 +96,19 @@ class RegisteredUserController extends Controller
                 'business_name' => $request->razon_social,
                 'status' => 'Pendiente',
             ];
-            
+    
             DB::table('person_data')->insert($personData);
-            
+    
             $this->sendRegistrationEmail($user, $username, $password);
-            
+    
             return redirect()->route('welcome')->with('success', 'Usuario registrado con éxito. Revisa tu correo electrónico para tu nombre de usuario y contraseña temporal.');
         } catch (ValidationException $e) {
             return redirect()->back()
                 ->withErrors($e->validator)
                 ->withInput()
-                ->with('register_tab', true); 
+                ->with('register_tab', true);
         }
     }
-    
     
     /**
      * Generar una contraseña aleatoria.
@@ -142,19 +166,21 @@ class RegisteredUserController extends Controller
                     ->subject('Detalles de Registro');
         });
     }
-    // App\Http\Controllers\Auth\RegisteredUserController.php
 
-public function checkEmail(Request $request)
-{
-    $email = $request->query('email');
-    $exists = User::where('email', $email)->exists();
-    return response()->json(['exists' => $exists]);
-}
+    public function checkEmail(Request $request)
+    {
+        $email = $request->query('email');
+        $exists = User::where('email', $email)->exists();
+        return response()->json(['exists' => $exists]);
+    }
 
-public function checkRFC(Request $request)
+    public function checkRfc(Request $request)
 {
-    $rfc = $request->query('rfc');
+    $rfc = $request->input('rfc');
+    
     $exists = DB::table('person_data')->where('rfc', $rfc)->exists();
+    
     return response()->json(['exists' => $exists]);
 }
+
 }

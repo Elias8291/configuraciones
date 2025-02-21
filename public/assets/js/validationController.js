@@ -1,48 +1,19 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Check if we are on the registration page before applying validation
     if (document.querySelector('form[action*="register"]')) {
-        // REGISTRATION FORM CODE
-        let tipoPersona = document.getElementById('tipo_persona');
-        let rfcInput = document.getElementById('rfc');
-        let razonSocialInput = document.getElementById('razon_social');
-
-        if (tipoPersona && rfcInput && razonSocialInput) {
-            tipoPersona.addEventListener('change', function() {
-                // Clear fields when changing person type
-                rfcInput.value = '';
-                razonSocialInput.value = '';
-
-                if (this.value === 'fisica') {
-                    rfcInput.setAttribute('maxlength', '13');
-                    rfcInput.placeholder = 'Ejemplo: ABCD123456XYZ';
-
-                    // Apply restriction on business name (only letters and spaces)
-                    razonSocialInput.setAttribute('placeholder', 'Ingresa solo letras y espacios');
-                    razonSocialInput.addEventListener('input', validarRazonSocial);
-                } else {
-                    rfcInput.setAttribute('maxlength', '12');
-                    rfcInput.placeholder = 'Ejemplo: ABC123456XYZ';
-
-                    // Remove restriction on business name
-                    razonSocialInput.setAttribute('placeholder', 'Razón social');
-                    razonSocialInput.removeEventListener('input', validarRazonSocial);
-                }
-            });
-        }
-
-        // VALIDATE BUSINESS NAME
-        function validarRazonSocial() {
-            this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
-        }
-
+        // REGISTRO DE VARIABLES GLOBALES
+        const tipoPersona = document.getElementById('tipo_persona');
+        const rfcInput = document.getElementById('rfc');
+        const razonSocialInput = document.getElementById('razon_social');
         const nameInput = document.getElementById('name');
         const firstLastnameInput = document.getElementById('first_lastname');
         const secondLastnameInput = document.getElementById('second_lastname');
+        const emailInput = document.getElementById('email');
+        const emailConfirmationInput = document.getElementById('email_confirmation_input');
+        const nextButton = document.getElementById('next-button');
         const nameRegex = /^[A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]*$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const emailInput = document.getElementById('email');
-        const emailConfirmationInput = document.getElementById('email_confirmation');
-        const nextButton = document.getElementById('next-button');
+        let emailTimeoutId = null;
 
         if (emailConfirmationInput) {
             emailConfirmationInput.disabled = true;
@@ -87,6 +58,25 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
+        // SHOW ERROR MESSAGE
+        function showErrorMessage(input, message) {
+            let errorDiv = input.parentElement.querySelector('.error-message');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message text-danger mt-1';
+                input.parentElement.appendChild(errorDiv);
+            }
+            errorDiv.textContent = message;
+        }
+
+        // REMOVE ERROR MESSAGE
+        function removeErrorMessage(input) {
+            const errorDiv = input.parentElement.querySelector('.error-message');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+        }
+
         // CHECK IF EMAILS MATCH
         function checkEmailsMatch() {
             if (emailInput && emailConfirmationInput && emailConfirmationInput.value.trim() !== '') {
@@ -124,15 +114,65 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
+        // Función para verificar si el correo existe en la BD
+        function checkEmailExists(email) {
+            fetch(`/check-email?email=${encodeURIComponent(email)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        showErrorMessage(emailInput, 'Este correo electrónico ya está registrado');
+                        
+                        // Deshabilitar el campo de confirmación y el botón si el correo ya existe
+                        if (emailConfirmationInput) {
+                            emailConfirmationInput.disabled = true;
+                        }
+                        if (nextButton) {
+                            nextButton.disabled = true;
+                        }
+                    } else {
+                        // Solo remover el mensaje de error de existencia, mantener otros errores si los hay
+                        const errorDiv = emailInput.parentElement.querySelector('.error-message');
+                        if (errorDiv && errorDiv.textContent === 'Este correo electrónico ya está registrado') {
+                            removeErrorMessage(emailInput);
+                        }
+                        
+                        // Habilitar el campo de confirmación si el correo es válido y no existe
+                        if (emailConfirmationInput) {
+                            emailConfirmationInput.disabled = false;
+                        }
+                        
+                        // Verificar otros campos para habilitar/deshabilitar el botón
+                        checkRequiredFields();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al verificar el correo:', error);
+                });
+        }
+
+        // Añadir validación en tiempo real para verificar si el correo ya existe
         if (emailInput) {
             emailInput.addEventListener('input', function() {
+                // Validación básica de formato
                 const isValid = validateEmail(this);
+                
+                // Si el correo tiene formato válido, verificar si existe en la BD
+                if (isValid) {
+                    clearTimeout(emailTimeoutId);
+                    // Esperar a que el usuario termine de escribir (debounce)
+                    emailTimeoutId = setTimeout(function() {
+                        checkEmailExists(emailInput.value);
+                    }, 500);
+                }
+                
+                // Actualizar estado del campo de confirmación
                 if (emailConfirmationInput) {
                     emailConfirmationInput.disabled = !isValid;
                     if (emailConfirmationInput.value.trim() !== '') {
                         checkEmailsMatch();
                     }
                 }
+                
                 checkRequiredFields();
             });
         }
@@ -170,89 +210,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 this.value = this.value.replace(/[^A-Za-záéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
                 validateName(this, 2, 50);
                 checkRequiredFields();
-            });
-        }
-
-        // SHOW ERROR MESSAGE
-        function showErrorMessage(input, message) {
-            let errorDiv = input.parentElement.querySelector('.error-message');
-            if (!errorDiv) {
-                errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message text-danger mt-1';
-                input.parentElement.appendChild(errorDiv);
-            }
-            errorDiv.textContent = message;
-        }
-
-        // REMOVE ERROR MESSAGE
-        function removeErrorMessage(input) {
-            const errorDiv = input.parentElement.querySelector('.error-message');
-            if (errorDiv) {
-                errorDiv.remove();
-            }
-        }
-
-        // Apply events only to registration form
-        const registerForm = document.querySelector('form[action*="register"]');
-        
-        if (registerForm) {
-            registerForm.addEventListener('submit', function(e) {
-                let hasErrors = false;
-                
-                if (!validateName(nameInput, 2, 60)) hasErrors = true;
-                if (!validateName(firstLastnameInput, 2, 50)) hasErrors = true;
-                if (secondLastnameInput && secondLastnameInput.value.trim() !== '' && !validateName(secondLastnameInput, 2, 50)) hasErrors = true;
-
-                if (emailInput && !validateEmail(emailInput)) hasErrors = true;
-                if (emailConfirmationInput && emailConfirmationInput.value.trim() === '') {
-                    hasErrors = true;
-                    showErrorMessage(emailConfirmationInput, 'La confirmación de correo electrónico es obligatoria');
-                } else if (emailConfirmationInput && !validateEmail(emailConfirmationInput)) hasErrors = true;
-                if (emailInput && emailConfirmationInput && emailInput.value !== emailConfirmationInput.value) {
-                    hasErrors = true;
-                    showErrorMessage(emailConfirmationInput, 'Los correos electrónicos no coinciden');
-                }
-
-                if (hasErrors) {
-                    e.preventDefault();
-                }
-            });
-
-            // NEXT BUTTON
-            if (document.getElementById('next-button')) {
-                document.getElementById('next-button').addEventListener('click', function() {
-                    document.getElementById('section-1').style.display = 'none';
-                    document.getElementById('section-2').style.display = 'block';
-                });
-            }
-            
-            // PREV BUTTON
-            if (document.getElementById('prev-button')) {
-                document.getElementById('prev-button').addEventListener('click', function() {
-                    document.getElementById('section-2').style.display = 'none';
-                    document.getElementById('section-1').style.display = 'block';
-                });
-            }
-        }
-    }
-
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        const togglePassword = loginForm.querySelector('.toggle-password');
-        if (togglePassword) {
-            togglePassword.addEventListener('click', function() {
-                const passwordInput = loginForm.querySelector('#password');
-                if (passwordInput) {
-                    if (passwordInput.type === 'password') {
-                        passwordInput.type = 'text';
-                        this.querySelector('i').classList.remove('fa-eye');
-                        this.querySelector('i').classList.add('fa-eye-slash');
-                    } else {
-                        passwordInput.type = 'password';
-                        this.querySelector('i').classList.remove('fa-eye-slash');
-                        this.querySelector('i').classList.add('fa-eye');
-                    }
-                }
             });
         }
     }

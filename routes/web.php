@@ -3,6 +3,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+
+
+
 Route::middleware('no-cache')->group(function () {
     Route::get('/', function () {
         return auth()->check() ? redirect('/dashboard') : view('welcome');
@@ -20,7 +24,10 @@ Route::middleware(['auth', 'verified', 'no-cache'])->group(function () {
         Route::delete('/', 'destroy')->name('profile.destroy');
     });
     Route::post('/register', [UserController::class, 'register'])->name('register');
+
 });
+Route::get('/check-email', [App\Http\Controllers\Auth\RegisteredUserController::class, 'checkEmail'])->name('check.email');
+
 
 
 require __DIR__ . '/auth.php';
